@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * liên quan đến bảng 'Film'.
  */
 public class FilmDAO extends DBContext {
-
+    private static FilmDAO instance;
     private static final Logger LOGGER = Logger.getLogger(FilmDAO.class.getName());
 
     // --- CÁC HẰNG SỐ SQL CHO BẢNG FILM ---
@@ -30,6 +30,18 @@ public class FilmDAO extends DBContext {
      * Lấy tất cả các bộ phim từ cơ sở dữ liệu.
      * @return một Danh sách (List) các đối tượng Film.
      */
+    
+    private FilmDAO() {
+        // DBContext đã tự tạo connection trong constructor, không cần làm gì thêm
+        super();
+    }
+
+    public static FilmDAO getInstance() {
+        if (instance == null) {
+            instance = new FilmDAO();
+        }
+        return instance;
+    }
     public List<Film> getAllFilms() {
         List<Film> list = new ArrayList<>();
         // Sử dụng hằng số SQL
