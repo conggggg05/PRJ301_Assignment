@@ -1,6 +1,7 @@
 package dao;
 
 import Models.Film;
+import dal.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,75 +13,103 @@ import java.util.logging.Logger;
 /**
  * Lớp FilmDAO chịu trách nhiệm truy vấn cơ sở dữ liệu 
  * liên quan đến bảng 'Film'.
- * Lớp này kế thừa DBContext để sử dụng kết nối 'connection'.
  */
-public class FilmDAO extends dal.DBContext {
-
-    // Sử dụng Logger để ghi lại lỗi (thay vì System.out.println)
+public class FilmDAO extends DBContext {
+    private static FilmDAO instance;
     private static final Logger LOGGER = Logger.getLogger(FilmDAO.class.getName());
 
+    // --- CÁC HẰNG SỐ SQL CHO BẢNG FILM ---
+    // (Đây là phần bạn muốn thêm, nhưng là cho Film)
+    private final String SQL_GET_ALL_FILMS = "SELECT [FilmID], [filmName], [description], [duration] FROM [Film]";
+    private final String SQL_GET_FILM_BY_ID = "SELECT [FilmID], [filmName], [description], [duration] FROM [Film] WHERE [FilmID] = ?";
+    private final String SQL_INSERT_FILM = "INSERT INTO [Film] ([filmName], [description], [duration]) VALUES (?, ?, ?)";
+    private final String SQL_UPDATE_FILM = "UPDATE [Film] SET [filmName] = ?, [description] = ?, [duration] = ? WHERE [FilmID] = ?";
+    private final String SQL_DELETE_FILM = "DELETE FROM [Film] WHERE [FilmID] = ?";
+
+    /**
+     * Lấy tất cả các bộ phim từ cơ sở dữ liệu.
+     * @return một Danh sách (List) các đối tượng Film.
+     */
+    
+    private FilmDAO() {
+        // DBContext đã tự tạo connection trong constructor, không cần làm gì thêm
+        super();
+    }
+
+    public static FilmDAO getInstance() {
+        if (instance == null) {
+            instance = new FilmDAO();
+        }
+        return instance;
+    }
     public List<Film> getAllFilms() {
         List<Film> list = new ArrayList<>();
-        // Câu lệnh SQL truy vấn tất cả các cột từ bảng Film
-        String sql = "SELECT [FilmID], [filmName], [description], [duration] FROM [Film]";
+        // Sử dụng hằng số SQL
+        String sql = SQL_GET_ALL_FILMS; 
 
-        // Sử dụng try-with-resources để đảm bảo PreparedStatement và ResultSet được đóng
         try (PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             
-            // Lặp qua từng dòng kết quả trả về
             while (rs.next()) {
-                Film film = new Film();
-                film.setFilmID(rs.getInt("FilmID"));
-                film.setFilmName(rs.getString("filmName"));
-                film.setDescription(rs.getString("description"));
-                film.setDuration(rs.getInt("duration"));
-                
-                // Thêm đối tượng Film vào danh sách
+                Film film = new Film(
+                    rs.getInt("FilmID"),
+                    rs.getString("filmName"),
+                    rs.getString("description"),
+                    rs.getInt("duration")
+                );
                 list.add(film);
             }
         } catch (SQLException e) {
-            // Ghi lại lỗi nếu có ngoại lệ SQL xảy ra
             LOGGER.log(Level.SEVERE, "Loi khi lay danh sach phim", e);
         }
-        return list; // Trả về danh sách phim
+        return list;
     }
 
+    /**
+     * Lấy thông tin một bộ phim bằng FilmID.
+     * @param filmID ID của phim cần tìm.
+     * @return một đối tượng Film nếu tìm thấy, ngược lại trả về null.
+     */
     public Film getFilmByID(int filmID) {
-        String sql = "SELECT [FilmID], [filmName], [description], [duration] FROM [Film] WHERE [FilmID] = ?";
+        // Sử dụng hằng số SQL
+        String sql = SQL_GET_FILM_BY_ID; 
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            // Thiết lập tham số (dấu ? thứ 1) cho câu lệnh SQL
             ps.setInt(1, filmID);
             
             try (ResultSet rs = ps.executeQuery()) {
-                // Kiểm tra xem có kết quả trả về không
                 if (rs.next()) {
-                    Film film = new Film();
-                    film.setFilmID(rs.getInt("FilmID"));
-                    film.setFilmName(rs.getString("filmName"));
-                    film.setDescription(rs.getString("description"));
-                    film.setDuration(rs.getInt("duration"));
-                    return film; // Trả về đối tượng Film
+                    Film film = new Film(
+                        rs.getInt("FilmID"),
+                        rs.getString("filmName"),
+                        rs.getString("description"),
+                        rs.getInt("duration")
+                    );
+                    return film;
                 }
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Loi khi tim phim bang ID", e);
         }
-        return null; // Trả về null nếu không tìm thấy hoặc có lỗi
+        return null;
     }
 
+    /**
+     * Thêm một bộ phim mới vào cơ sở dữ liệu.
+     * @param film Đối tượng Film chứa thông tin cần thêm.
+     * @return true nếu thêm thành công, false nếu thất bại.
+     */
     public boolean addFilm(Film film) {
-        String sql = "INSERT INTO [Film] ([filmName], [description], [duration]) VALUES (?, ?, ?)";
+        // Sử dụng hằng số SQL
+        String sql = SQL_INSERT_FILM; 
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, film.getFilmName());
             ps.setString(2, film.getDescription());
             ps.setInt(3, film.getDuration());
 
-            // executeUpdate() trả về số dòng bị ảnh hưởng
             int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0; // Trả về true nếu có ít nhất 1 dòng bị ảnh hưởng
+            return rowsAffected > 0;
             
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Loi khi them phim moi", e);
@@ -88,8 +117,14 @@ public class FilmDAO extends dal.DBContext {
         }
     }
 
+    /**
+     * Cập nhật thông tin một bộ phim đã có.
+     * @param film Đối tượng Film chứa thông tin cần cập nhật.
+     * @return true nếu cập nhật thành công, false nếu thất bại.
+     */
     public boolean updateFilm(Film film) {
-        String sql = "UPDATE [Film] SET [filmName] = ?, [description] = ?, [duration] = ? WHERE [FilmID] = ?";
+        // Sử dụng hằng số SQL
+        String sql = SQL_UPDATE_FILM; 
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, film.getFilmName());
@@ -112,7 +147,8 @@ public class FilmDAO extends dal.DBContext {
      * @return true nếu xóa thành công, false nếu thất bại.
      */
     public boolean deleteFilm(int filmID) {
-        String sql = "DELETE FROM [Film] WHERE [FilmID] = ?";
+        // Sử dụng hằng số SQL
+        String sql = SQL_DELETE_FILM;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, filmID);
@@ -121,16 +157,10 @@ public class FilmDAO extends dal.DBContext {
             return rowsAffected > 0;
             
         } catch (SQLException e) {
-            // Cẩn thận: Nếu phim đang được tham chiếu (ví dụ trong Showtime),
-            // việc xóa có thể thất bại do ràng buộc khóa ngoại.
             LOGGER.log(Level.SEVERE, "Loi khi xoa phim", e);
             return false;
         }
     }
-    
-    /**
-     * Hàm main để kiểm tra nhanh các chức năng của DAO.
-     */
     public static void main(String[] args) {
         // Tạo một đối tượng FilmDAO (sẽ tự động kết nối DB trong constructor của DBContext)
         FilmDAO dao = new FilmDAO();
