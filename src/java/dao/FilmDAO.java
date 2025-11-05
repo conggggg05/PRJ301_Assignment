@@ -1,6 +1,6 @@
 package dao;
 
-import Models.Film;
+import models.Film;
 import dal.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

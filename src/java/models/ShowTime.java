@@ -7,13 +7,13 @@ public class ShowTime {
     private int  ShowtimeID;
     private int FilmID;
     private Date startTime;
-    private float price;
+    private double Price;
 
-    public ShowTime(int ShowtimeID, int FilmID, Date startTime, float price) {
+    public ShowTime(int ShowtimeID, int FilmID, Date startTime, double Price) {
         this.ShowtimeID = ShowtimeID;
         this.FilmID = FilmID;
         this.startTime = startTime;
-        this.price = price;
+        this.Price = Price;
     }
 
     public ShowTime() {
@@ -43,12 +43,12 @@ public class ShowTime {
         this.startTime = startTime;
     }
 
-    public float getPrice() {
-        return price;
+    public double getPrice() {
+        return Price;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
+    public void setPrice(double Price) {
+        this.Price = Price;
     }
     
     

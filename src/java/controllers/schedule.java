@@ -5,7 +5,7 @@
 
 package controllers;
 
-import Models.Film;
+import models.Film;
 import dao.FilmDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
