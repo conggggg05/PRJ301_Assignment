@@ -1,6 +1,7 @@
 package dao;
 
 import Models.Film;
+import dal.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
  * liên quan đến bảng 'Film'.
  * Lớp này kế thừa DBContext để sử dụng kết nối 'connection'.
  */
-public class FilmDAO extends dal.DBContext {
+public class FilmDAO extends DBContext {
 
     // Sử dụng Logger để ghi lại lỗi (thay vì System.out.println)
     private static final Logger LOGGER = Logger.getLogger(FilmDAO.class.getName());
