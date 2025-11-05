@@ -24,4 +24,12 @@
         <servlet-name>schedule</servlet-name>
         <url-pattern>/schedule</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>filmList</servlet-name>
+        <servlet-class>controllers.film_list_servlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>filmList</servlet-name>
+        <url-pattern>/filmList</url-pattern>
+    </servlet-mapping>
 </web-app>
