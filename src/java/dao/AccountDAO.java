@@ -11,6 +11,7 @@ public class AccountDAO extends DBContext {
     private static AccountDAO instance;
     private final String SQL_GET_ALL_ACCOUNT = "select * from Account";
     private final String SQL_GET_ACCOUNT = "SELECT * FROM Account WHERE username=? AND password=?";
+    private final String SQL_INSERT_ACCOUNT = "";
 
     private AccountDAO() {
         // DBContext đã tự tạo connection trong constructor, không cần làm gì thêm
@@ -48,7 +49,7 @@ public class AccountDAO extends DBContext {
         return list;
     }
 
-    //đăng nhập
+    //đăng nhập - select
     public Account login(String username, String password) {
         try (PreparedStatement ps = connection.prepareStatement(SQL_GET_ACCOUNT)) {
             ps.setString(1, username);
@@ -65,5 +66,10 @@ public class AccountDAO extends DBContext {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    // đăng ký - insert
+    public boolean register(String username, String password){
+        return false;
     }
 }

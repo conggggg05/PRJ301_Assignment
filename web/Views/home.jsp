@@ -17,9 +17,9 @@
                     <!-- đã đăng nhập -->
                     <c:if test="${not empty sessionScope.user}">
                         <th><a href="booking.jsp">Đặt vé</a></th>
-                        <th><a href="movie.jsp">Phim</a></th>
+                        <th><a href="film.jsp">Phim</a></th>
                         <th><a href="schedule.jsp">Lịch phim</a></th>
-                        <th><a href="logout">Đăng xuất</a></th>
+                        <th><a href="${pageContext.request.contextPath}/logout">Đăng xuất</a></th>
                         <th>Xin chào, ${sessionScope.user.username}</th>
                     </c:if>
 
@@ -34,7 +34,6 @@
 
         <div style="text-align:center; margin-top:50px;">
             <h2>Chào mừng đến với Phimrap.org</h2>
-            <p>Trang web đặt vé xem phim trực tuyến dành cho mọi người.</p>
         </div>
     </body>
 </html>

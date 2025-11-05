@@ -5,7 +5,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Login/Register</title>
     </head>
     <body>
         <form action="${pageContext.request.contextPath}/login_register" method="post" style="width:300px; margin:auto; text-align:center;">
