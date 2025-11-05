@@ -10,8 +10,9 @@ public class AccountDAO extends DBContext {
 
     private static AccountDAO instance;
     private final String SQL_GET_ALL_ACCOUNT = "select * from Account";
-    private final String SQL_GET_ACCOUNT = "SELECT * FROM Account WHERE username=? AND password=?";
+    private final String SQL_GET_ACCOUNT = "SELECT * FROM Account WHERE username=?";
     private final String SQL_INSERT_ACCOUNT = "INSERT INTO Account (Username, Password, Role) VALUES (?, ?, 1)";
+    
 
     private AccountDAO() {
         // DBContext đã tự tạo connection trong constructor, không cần làm gì thêm
@@ -79,5 +80,22 @@ public class AccountDAO extends DBContext {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    //select account by username
+    public Account getAccountByUsername(String username){
+        try {
+            PreparedStatement stm = connection.prepareStatement(SQL_GET_ACCOUNT);
+            stm.setString(1, username);
+            ResultSet rs = stm.executeQuery();
+            if(rs.next()){
+                String user = rs.getString(2);
+                String pass = rs.getString(3);
+                return new Account(username, pass);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return null;
     }
 }

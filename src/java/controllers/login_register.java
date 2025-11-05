@@ -48,10 +48,13 @@ public class login_register extends HttpServlet {
                 request.getRequestDispatcher("/Views/login_register.jsp").forward(request, response);
             }
         } else if (action != null && action.equals("register")) {
-            
-            if(){
+            Account account = AccountDAO.getInstance().getAccountByUsername(username);
+            if (account == null) {
+                AccountDAO.getInstance().register(username, password);
                 request.setAttribute("error", "Đăng ký thành công");
-            }else{
+            } else if (account != null) {
+                request.setAttribute("error", "Đăng ký thành công. Usernam đã tồn tại");
+            } else {
                 request.setAttribute("error", "Đăng ký không thành công");
             }
             request.getRequestDispatcher("/Views/login_register.jsp").forward(request, response);
