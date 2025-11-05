@@ -48,7 +48,11 @@ public class login_register extends HttpServlet {
                 request.getRequestDispatcher("/Views/login_register.jsp").forward(request, response);
             }
         } else if (action != null && action.equals("register")) {
-
+            if(){
+                request.setAttribute("error", "Đăng ký thành công");
+            }else{
+                request.setAttribute("error", "Đăng ký không thành công");
+            }
             request.getRequestDispatcher("/Views/login_register.jsp").forward(request, response);
         } else {
             // Nếu không có action, quay về trang đăng nhập

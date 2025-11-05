@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Lớp FilmDAO chịu trách nhiệm truy vấn cơ sở dữ liệu 
- * liên quan đến bảng 'Film'.
- */
+
 public class FilmDAO extends DBContext {
+
+    // Sử dụng Logger để ghi lại lỗi (thay vì System.out.println)
+
     private static FilmDAO instance;
     private static final Logger LOGGER = Logger.getLogger(FilmDAO.class.getName());
 
@@ -26,10 +26,7 @@ public class FilmDAO extends DBContext {
     private final String SQL_UPDATE_FILM = "UPDATE [Film] SET [filmName] = ?, [description] = ?, [duration] = ? WHERE [FilmID] = ?";
     private final String SQL_DELETE_FILM = "DELETE FROM [Film] WHERE [FilmID] = ?";
 
-    /**
-     * Lấy tất cả các bộ phim từ cơ sở dữ liệu.
-     * @return một Danh sách (List) các đối tượng Film.
-     */
+
     
     private FilmDAO() {
         // DBContext đã tự tạo connection trong constructor, không cần làm gì thêm
